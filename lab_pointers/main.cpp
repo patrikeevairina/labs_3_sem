@@ -31,6 +31,7 @@ private:
 
 public:
     BST();
+    ~BST();
 
     void print();
     bool find(int);
@@ -173,6 +174,11 @@ void BST::erase(int key)
     int replace_value = replace->key;
     erase(replace_value);
     curr->key = replace_value;
+}
+
+BST::~BST()
+{
+    
 }
 
 int main()
