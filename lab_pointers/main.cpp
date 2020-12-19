@@ -8,38 +8,38 @@ typedef weak_ptr<Node> parentPtr;
 
 class Node
 {
- public:
-     int key;
-     nodePtr left;
-     nodePtr right;
-     Node(int val)
-     {
-         left = nullptr;
-         right = nullptr;
-         key = val;
-     }
-     ~Node()
-     {
-         cout << "Delete node" << endl;
-     }
+public:
+    int key;
+    nodePtr left;
+    nodePtr right;
+    Node(int val)
+    {
+        left = nullptr;
+        right = nullptr;
+        key = val;
+    }
+
 };
 
 class BST
 {
- private:
+private:
     nodePtr _root;
     int _size;
     void printTree(nodePtr);
-    void deleteTree(nodePtr);
 
- public:
+
+public:
     BST();
-    ~BST();
+
     void print();
     bool find(int);
     void insert(int);
     void erase(int);
-    int size();
+    int size()
+    {
+        return _size;
+    }
 };
 
 BST::BST()
@@ -48,26 +48,12 @@ BST::BST()
 
 }
 
-BST::~BST()
-{
-    deleteTree(_root);
-}
-
-void BST::deleteTree(nodePtr curr)
-{
-    if (curr)
-    {
-        deleteTree(curr->left);
-        deleteTree(curr->right);
-       // delete curr;
-    }
-}
-
 void BST::print()
 {
-   // cout << "use " << _root.use_count() << endl;
+    // cout << "use " << _root.use_count() << endl;
     printTree(_root);
     cout << endl;
+
 }
 
 void BST::printTree(nodePtr curr)
@@ -78,6 +64,7 @@ void BST::printTree(nodePtr curr)
         cout << curr->key << " ";
         printTree(curr->right);
     }
+
 
 }
 
@@ -96,7 +83,7 @@ bool BST::find(int key)
 
 void BST::insert(int key)
 {
-    cout << endl << "size " << _size << endl;
+    //cout << endl << "size " << _size << endl;
     _size++;
     if (_root == nullptr)
     {
@@ -164,7 +151,7 @@ void BST::erase(int key)
         if (parent.lock() && parent.lock()->right == curr)
             parent.lock()->right = curr->right;
         --_size;
-       // delete curr;
+        // delete curr;
         return;
     }
     if (curr->right == nullptr)
@@ -175,7 +162,7 @@ void BST::erase(int key)
         if (parent.lock() && parent.lock()->right == curr)
             parent.lock()->right = curr->left;
         --_size;
-     //   delete curr;
+        //   delete curr;
         return;
     }
     // У элемента есть два потомка, тогда на место элемента поставим
@@ -196,6 +183,7 @@ int main()
         tree->insert(i);
     }
     tree->print();
+    cout << tree->size() << endl;
 
     for (int i = 8; i > 2; --i)
     {
@@ -203,6 +191,7 @@ int main()
     }
 
     tree->print();
+    cout << tree->size();
 
     return 0;
 }
