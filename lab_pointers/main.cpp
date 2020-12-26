@@ -157,22 +157,24 @@ void BST::erase(int key)
         return;
     if (curr->left == nullptr)
     {
+        nodePtr buf = curr->parent.lock();
         // Вместо curr подвешивается его правое поддерево
-        if (curr->parent.lock() && curr->parent.lock()->left == curr)
-            curr->parent.lock()->left = curr->right;
-        if (curr->parent.lock() && curr->parent.lock()->right == curr)
-            curr->parent.lock()->right = curr->right;
+        if (buf && buf->left == curr)
+            buf->left = curr->right;
+        if (buf && buf->right == curr)
+            buf->right = curr->right;
         --_size;
        // delete curr;
         return;
     }
     if (curr->right == nullptr)
     {
+        nodePtr buf = curr->parent.lock();
         // Вместо curr подвешивается его левое поддерево
-        if (curr->parent.lock() && curr->parent.lock()->left == curr)
-            curr->parent.lock()->left = curr->left;
-        if (curr->parent.lock() && curr->parent.lock()->right == curr)
-            curr->parent.lock()->right = curr->left;
+        if (buf && buf->left == curr)
+            buf->left = curr->left;
+        if (buf && buf->right == curr)
+            buf->right = curr->left;
         --_size;
      //   delete curr;
         return;
@@ -202,6 +204,7 @@ int main()
     }
 
     tree->print();
+    
 
     return 0;
 }
