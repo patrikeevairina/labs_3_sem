@@ -8,39 +8,36 @@ typedef weak_ptr<Node> parentPtr;
 
 class Node
 {
-public:
-    int key;
-    nodePtr left;
-    nodePtr right;
-    Node(int val)
-    {
-        left = nullptr;
-        right = nullptr;
-        key = val;
-    }
+ public:
+     int key;
+     nodePtr left;
+     nodePtr right;
+     parentPtr parent;
+     Node(int val)
+     {
+         left = nullptr;
+         right = nullptr;
+         key = val;
+     }
 
 };
 
 class BST
 {
-private:
+ private:
     nodePtr _root;
     int _size;
     void printTree(nodePtr);
+    void deleteTree(nodePtr);
 
-
-public:
+ public:
     BST();
     ~BST();
-
     void print();
     bool find(int);
     void insert(int);
     void erase(int);
-    int size()
-    {
-        return _size;
-    }
+    int size();
 };
 
 BST::BST()
@@ -49,12 +46,26 @@ BST::BST()
 
 }
 
+BST::~BST()
+{
+    deleteTree(_root);
+}
+
+void BST::deleteTree(nodePtr curr)
+{
+    if (curr)
+    {
+        deleteTree(curr->left);
+        deleteTree(curr->right);
+       // delete curr;
+    }
+}
+
 void BST::print()
 {
-    // cout << "use " << _root.use_count() << endl;
+   // cout << "use " << _root.use_count() << endl;
     printTree(_root);
     cout << endl;
-
 }
 
 void BST::printTree(nodePtr curr)
@@ -65,7 +76,6 @@ void BST::printTree(nodePtr curr)
         cout << curr->key << " ";
         printTree(curr->right);
     }
-
 
 }
 
@@ -84,7 +94,7 @@ bool BST::find(int key)
 
 void BST::insert(int key)
 {
-    //cout << endl << "size " << _size << endl;
+    cout << endl << "size " << _size << endl;
     _size++;
     if (_root == nullptr)
     {
@@ -101,7 +111,7 @@ void BST::insert(int key)
                 if (node->left == nullptr)
                 {
                     node->left = nodePtr(new Node(key));
-
+                    node->left->parent = node;
                     return;
                 }
                 else
@@ -114,6 +124,7 @@ void BST::insert(int key)
                 if (node->right == 0)
                 {
                     node->right = nodePtr(new Node(key));
+                    node->right->parent = node;
 
                     return;
                 }
@@ -129,10 +140,10 @@ void BST::insert(int key)
 void BST::erase(int key)
 {
     nodePtr curr = _root;
-    parentPtr parent;
+   // parentPtr parent;
     while (curr && curr->key != key)
     {
-        parent = curr;
+        //parent = curr;
         if (curr->key > key)
         {
             curr = curr->left;
@@ -147,23 +158,23 @@ void BST::erase(int key)
     if (curr->left == nullptr)
     {
         // Вместо curr подвешивается его правое поддерево
-        if (parent.lock() && parent.lock()->left == curr)
-            parent.lock()->left = curr->right;
-        if (parent.lock() && parent.lock()->right == curr)
-            parent.lock()->right = curr->right;
+        if (curr->parent.lock() && curr->parent.lock()->left == curr)
+            curr->parent.lock()->left = curr->right;
+        if (curr->parent.lock() && curr->parent.lock()->right == curr)
+            curr->parent.lock()->right = curr->right;
         --_size;
-        // delete curr;
+       // delete curr;
         return;
     }
     if (curr->right == nullptr)
     {
         // Вместо curr подвешивается его левое поддерево
-        if (parent.lock() && parent.lock()->left == curr)
-            parent.lock()->left = curr->left;
-        if (parent.lock() && parent.lock()->right == curr)
-            parent.lock()->right = curr->left;
+        if (curr->parent.lock() && curr->parent.lock()->left == curr)
+            curr->parent.lock()->left = curr->left;
+        if (curr->parent.lock() && curr->parent.lock()->right == curr)
+            curr->parent.lock()->right = curr->left;
         --_size;
-        //   delete curr;
+     //   delete curr;
         return;
     }
     // У элемента есть два потомка, тогда на место элемента поставим
@@ -176,11 +187,6 @@ void BST::erase(int key)
     curr->key = replace_value;
 }
 
-BST::~BST()
-{
-    
-}
-
 int main()
 {
     BST *tree = new BST();
@@ -189,7 +195,6 @@ int main()
         tree->insert(i);
     }
     tree->print();
-    cout << tree->size() << endl;
 
     for (int i = 8; i > 2; --i)
     {
@@ -197,7 +202,6 @@ int main()
     }
 
     tree->print();
-    cout << tree->size();
 
     return 0;
 }
