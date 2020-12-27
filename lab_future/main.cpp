@@ -28,9 +28,6 @@ int countBits(const int threads)
     }
 
     for(int i=0;i<threads;i++)
-        s[i].wait();
-
-    for(int i=0;i<threads;i++)
         count += s[i].get();
     return count;
 }
