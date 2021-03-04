@@ -51,7 +51,7 @@ void clearVec(vector<Command> &vec)
 }
 
 
-int main()
+int main(int argc, char **argv)
 {
 
     clock_t start = clock();
@@ -59,7 +59,7 @@ int main()
     char ch_next;
     char ch_prev = 'p';
     int count_rep = 1;
-    ifstream infile("C:/Programming/brainf_ck/test2");
+    ifstream infile(argv[1]);
     while (infile)
     {
         infile.get(ch_next);
